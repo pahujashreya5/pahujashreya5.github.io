@@ -5,6 +5,7 @@
 Transport Noise is used to create the effect of turbulence in fluids. Why is it different from other types of noise (Curl Noise, Flow Noise) used for fluids? Curl and Flow noises use external forces to create the movements that we see in a fluids. Transport Noise differs because it works directly with particle positions. It creates swirly turbulence by changing the positions of particles of the fluid itself. 
 
 >  A transport type noise in a fluid dynamic model may be seen, loosely speaking, as a simplified description of small-medium space-scales of motion.
+
 > ...in general, this perturbation destabilizes large scales producing smaller eddies.
 
 Above quoted from [https://www.researchgate.net/publication/374437022_Effect_of_Transport_Noise_on_Kelvin-Helmholtz_Instability](https://www.researchgate.net/publication/374437022_Effect_of_Transport_Noise_on_Kelvin-Helmholtz_Instability)

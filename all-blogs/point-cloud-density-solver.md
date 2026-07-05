@@ -26,11 +26,8 @@ Spatial hashing is when hashing is done for multi-dimensional values, like coord
 This approach uses an additonal step of converting the sparse array to a dense array, which reduces memory usage greatly.
 [https://www.youtube.com/watch?v=D2M8jTtKi44](https://www.youtube.com/watch?v=D2M8jTtKi44)
 
-#### Code Breakdown [See VEX code file↗]()
+#### Code Breakdown [See VEX code file↗](spatial-hashing-vex-breakdown.md)
 This code is adapted from the [C++ code by Ten Minute Physics](https://github.com/matthias-research/pages/blob/master/tenMinutePhysics/11-hashing.html)
-
-##### VEX Code
-[]
 
 ##### Visual Demo Showing Working Of Above Code In Houdini
 

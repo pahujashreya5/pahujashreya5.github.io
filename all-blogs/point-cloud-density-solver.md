@@ -26,10 +26,13 @@ Spatial hashing is when hashing is done for multi-dimensional values, like coord
 This approach uses an additonal step of converting the sparse array to a dense array, which reduces memory usage greatly.
 [https://www.youtube.com/watch?v=D2M8jTtKi44](https://www.youtube.com/watch?v=D2M8jTtKi44)
 
-#### Code Breakdown [See VEX code file↗](spatial-hashing-vex-breakdown.md)
+**Code Breakdown [See here↗](spatial-hashing-vex-breakdown.md)
+Visual Demo Showing Working Of Above Code In Houdini()
+Code File (VEX) [See here↗]()**
 This code is adapted from the [C++ code by Ten Minute Physics](https://github.com/matthias-research/pages/blob/master/tenMinutePhysics/11-hashing.html)
 
-##### Visual Demo Showing Working Of Above Code In Houdini
+But how does this do something like calculating point cloud density? Just like it works for collision detection. Whenever a point is found in a voxel (or at a 2D coordinate in our code's case), the algorithm adds 1 to that coordinates count. This count directly represents density! 
+Ultimately, it is as simple as flattening the point cloud over a 1D array and counting the number of points that lie in each array index. This is density. If the counts are high, that means the space has high density and vice-versa.
 
 ### Method 2: KD Tree Data Structure
 
@@ -38,7 +41,8 @@ K-Dimensional tree is analogous to a binary search tree for more than one dimens
 1. It is highly recommended to keep a check either on the algorithm's runtime or recursion stack, and terminate the algorithm if either of these two exceeds a certain limit. Else, the system might crash. Alternatively, a maximum distance or maximum points parameter may be maintained. These are some approximate methods that do well for certain purposes.
 2. On high dimensional data, this algorithm may be barely any better than an exhaustive linear search. Commonly, it is advised to use this algorithm if n (the number of points) exceeds 2 raised to power k (where k is dimension of data) by a large difference, i.e., n>>2**k.
 
-#### Code Breakdown [See VEX code file↗]()
+Code Breakdown [See here↗]()
+Code File (VEX) [See here↗]()
 
 ### Comparison Between Method 1 & Method 2
 

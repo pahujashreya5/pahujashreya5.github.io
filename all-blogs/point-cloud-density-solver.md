@@ -26,9 +26,9 @@ Spatial hashing is when hashing is done for multi-dimensional values, like coord
 This approach uses an additonal step of converting the sparse array to a dense array, which reduces memory usage greatly.
 [https://www.youtube.com/watch?v=D2M8jTtKi44](https://www.youtube.com/watch?v=D2M8jTtKi44)
 
-**Code Breakdown [See here↗](spatial-hashing-vex-breakdown.md)
-Visual Demo Showing Working Of Above Code In Houdini()
-Code File (VEX) [See here↗]()**
+**Code Breakdown** [See here↗](all-blogs/spatial-hashing-vex-breakdown.md)
+**Video Demo** Showing Working Of Above Code In Houdini()
+**Code File (VEX)** [See here↗]()
 This code is adapted from the [C++ code by Ten Minute Physics](https://github.com/matthias-research/pages/blob/master/tenMinutePhysics/11-hashing.html)
 
 But how does this do something like calculating point cloud density? Just like it works for collision detection. Whenever a point is found in a voxel (or at a 2D coordinate in our code's case), the algorithm adds 1 to that coordinates count. This count directly represents density! 

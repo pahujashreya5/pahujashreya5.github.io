@@ -30,11 +30,7 @@ This approach uses an additonal step of converting the sparse array to a dense a
 This code is adapted from the [C++ code by Ten Minute Physics](https://github.com/matthias-research/pages/blob/master/tenMinutePhysics/11-hashing.html)
 
 ##### VEX Code
-
-
-```
-
-```
+[]
 
 ##### Visual Demo Showing Working Of Above Code In Houdini
 

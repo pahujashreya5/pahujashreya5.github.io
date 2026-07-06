@@ -5,8 +5,8 @@ This is a recursive algorithm, which means it uses memory overhead (recursion st
 
 ## A Note On Recursion in VEX
 
-On searching online, people have come up with lots of great methods to make recursion work in VEX. From mimicing a stack using an array, to using multiple pointers. The method that is most intuitive to me is using groups. I learnt this from [Junichiro Horikawa's INCREDIBLE playlist](https://www.youtube.com/watch?v=V5i6KM_-8X0) - lesson 26 talks about using groups for recursion with lots of useful examples. Honestly, I went from zero to being able to write and execute full projects in Houdini on my own because of religiously following this one guy's tutorials.
-So now let's see how I got the KD Tree algorithm to work using this trick with the group feature in Houdini!
+Implementing this using recursion in VEX would be pointlessly exhausting. Since VEX is designed to compile code inline (it just pastes all your code into one main block in its compiler and runs it for fast execution), it is inherently designed for no overhead memory usage-whithout which recursion can't happen.
+The common memory-optimized method for trees is using a heap/stack. This data structure 
 
 BTW, you can find the KD tree algorithm itself nicely explained here: [https://www.baeldung.com/cs/k-d-trees](https://www.baeldung.com/cs/k-d-trees)
 

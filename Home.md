@@ -1,6 +1,6 @@
 [Home](Home.md) 
 [About Me](about-me.md)
-[Blogs](blogposts.md)
+[Blogs](all-blogs/blogposts-home.md)
 [Project Codes](codes.md)
 [Portfolio Projects Showreel](portfolio-page.md)
 

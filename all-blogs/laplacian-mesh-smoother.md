@@ -13,7 +13,7 @@ _<sup>**</sup>I use 'point' in this blog because this is the terminology when wo
 
 The 'uniform' refers to uniform weights for all neighbours. This makes it not very accurate. It works well when triangulation in uniform (triangles of mesh are of equal size). The mesh is simply drawn inward to the geometric center (center of the shape of mesh) which is hardly the case for most geometries unless they are intended to be simple.
 
-$$$$ b. Cotan Laplacian smoothing*
+#### b. Cotan Laplacian smoothing*
 
 This is more accurate. Uses the cotangent matrix for weighting neighbours. This matrix keeps the information about shape and size of triangles intact. It is made of the cotangents of the angles opposite the shared angles of the points. So as you can see, the average of cotangents of angles $\alpha_{ij}$ and $\beta_{ij}$. We will come to the rest of the terms in the below formula used to geenrate the weight matrix later.
 

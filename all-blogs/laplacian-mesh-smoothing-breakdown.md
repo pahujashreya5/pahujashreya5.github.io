@@ -13,6 +13,8 @@ a. Cotangent formula used is $$\cot(\theta) = \frac{A \cdot B}{|A \times B|}$$, 
 
 b. No actual matrix is created for the weights. This would in fact be equivalent to taking many steps backward efficiency-wise because Houdini a highly optimized method to store geometry meshes. Each point already has its 1-ring neighbours stored within structures that allow O(1) (that is constant time) access. They are retrieved using the simple 'neighbours(node_num, point_num)' function.   
 What I used instead is a dictionary for every point. And each dictionary contains _(key: neighbour_num; value: cotangent weight of this neighbour with current point)_. This seemed like one of the best options because 1. this allows constant time access to weight for any point-neighbour pair, and 2. Each point has a variable number of neighbours and dictionaries can easily adapt to this, since the value can be any data type in a dictionary in VEX Houdini.
+
+c. When to normalize vectors? I have normalized some vectors in the custom cotangent weight calculations fucntion. We need to keep in mind the values a function may return and how they can change when operations are done them. When working with vectors is the magnitude is not really necessary for the computation or may be cancelled out by some operations later on, it is good to normalize them. This way, you preent bugs that may explode or collapse your geometry in case you experiment with very large or very small scale of geometry. An example will be shown when I comee to the cotangent weight calculations function.
   
 ## The Node Setup 
 
@@ -45,8 +47,17 @@ d@cot_wts=cot_wts;
 
 1. Go into the solver and insert a point wrangle. Let's name it 'laplacian_mesh_smoother'.
 
-2. The maind body of the algorithm is below:
+2. The main body of the algorithm is below:
 
+Remember to get the attributes from upstream first!
+```
+// get all attributes from detailwrangle
+dict cot_wts=point(0,"cot_wts",@ptnum);
+float lambda=detail(0,"lambda");
+float mu=detail(0,"mu");
+```
+
+Main code block
 ```
 // this code runs for each point in the mesh
 // loop over all 1-ring neighbours of current point
@@ -58,12 +69,9 @@ foreach(int nbr; neighbours(0,@ptnum)) {
     // store the weight as value with nbr as dictionary
     cot_wts[itoa(nbr)]=curr_wt;
 }
-// now we need to get ${C_pp}$
 // get summation of the weights of all its neighbours
 float sum_wts=0;
 foreach(string key; keys(cot_wts)) sum_wts+=cot_wts[key];
-// store ${C_pp}$ in dictionary also.
-cot_wts[itoa(@ptnum)]=sum_wts;
 // update the dictionary attribute for current point
 setpointattrib(0,"cot_wts",@ptnum,cot_wts,"set");
 // now we have all the cotangent weights
@@ -88,3 +96,38 @@ if(@Frame%2==0) @P+=lambda*normalized_delta_p;
 else @P+=mu*normalized_delta_p;
 ```
 
+3. Writing the cotangent weights calculation function.
+
+<img width="919" height="256" alt="Screenshot 2026-07-08 at 2 59 16 PM" src="https://github.com/user-attachments/assets/29c873da-968b-4f40-af94-e83647f44e12" />
+
+
+```
+// write function to calculate cotangent weight of a point 
+function float get_cot_wt(int pt; int nbr) {
+    // we have the point pt and its neighbor nbr
+    // get the shared gedge
+    int hedge1=pointedge(0, pt, nbr);
+    // get the next equivalent hedge (which will be used to get the adjacent triangle)
+    int hedge2=hedge_nextequiv(0,hedge1);
+    // get the first triangle primitive from the first hedge
+    int tri_num1=hedge_prim(0,hedge1);
+    // get the adjacent traignle using the next equivalent hedge
+    int tri_num2=hedge_prim(0,hedge2);
+    // get the vectors needed to calculate the angles needed to find weight
+    int h1=hedge_next(0,hedge1);
+    int t1=hedge_dstpoint(0,h1);
+    vector v1_a=point(0,"P",pt)-point(0,"P",t1);
+    vector v1_b=point(0,"P",nbr)-point(0,"P",t1);
+    int h2=hedge_prev(0,hedge2);
+    int t2=hedge_srcpoint(0,h2);
+    vector v2_a=point(0,"P",t2)-point(0,"P",pt);
+    vector v2_b=point(0,"P",t2)-point(0,"P",nbr);
+    // finding cotangent of the angles
+    float cot_theta1 = dot(v1_a,v1_b) / max(length(cross(v1_a,v1_b)), 0.00001);
+    float cot_theta2 = dot(v2_a,v2_b) / max(length(cross(v2_a,v2_b)), 0.00001);
+    // finally average of both values is the weight
+    float cot_wt=(cot_theta1+cot_theta2)/2;
+    // make sure to return this value because i specified float type as return type
+    return cot_wt;
+}
+```

@@ -1,5 +1,6 @@
 # Optimal Shape Matching (1. Using Absolute Rigid Alignment (Quaternions) 2. As-Rigid-As-Possible (ARAP) Deformation)
-1. [https://web.stanford.edu/class/cs273/refs/Absolute-OPT.pdf](https://web.stanford.edu/class/cs273/refs/Absolute-OPT.pdf)
+1. Closed-form solution of absolute orientation using unit quaternions [https://web.stanford.edu/class/cs273/refs/Absolute-OPT.pdf](https://web.stanford.edu/class/cs273/refs/Absolute-OPT.pdf)
+2. 
 
 **Note:** This blog has some pre-requisties. Make sure you have at least some prior knowledge of linear algebra (matrices & differentiation mainly) and quaternions.
 
@@ -39,7 +40,7 @@ Under the hood: Also uses gradient descent.
 ### 1. Absolute Rigid Alignment (Quaternions)
 [See my VEX code here♥️]()
 
-**Statement:** Implementing [Horn's solution]([https://hunterheidenreich.com/notes/biology/computational-biology/horn-absolute-orientation/](https://web.stanford.edu/class/cs273/refs/Absolute-OPT.pdf)) to find the optimal translation and rotation between two corresponding point sets.
+**Statement:** Implementing [Horn's solution](https://web.stanford.edu/class/cs273/refs/Absolute-OPT.pdf) to find the optimal translation and rotation between two corresponding point sets. **(Closed-form solution of absolute orientation using unit quaternions)**
 
 #### The Maths
 
@@ -53,12 +54,50 @@ This paper offers a closed-form solution. This means that it is not an iterative
 
 > I give the solution in a form in which unit quaternions are used to represent rotations. The solution for the desired quaternion is shown to be the eigenvector of a symmetric 4X4 matrix associated with the most positive eigenvalue.
 
-
-
-
-
+I do not delve into the derivations of each step in this blog, but drop me an email if you would like one on that too :)
 
 ### Algorithm 
+_Note: $r_i$ are vectors._
+
+INTRO: Horn uses the idea of finding an error term with respect to each of the operations (rotation, translation and scaling) and then solves each of them by the error (by differentiation).
+
+1. Horn starts with creating another coordinate system, with axes called 'left' and 'right. It uses the vectors created by coordinates of the points.
+   
+3. Matrix $M_l$ (l subscript for 'left') contains the x, y and z axes of the new coordinate system left, as columns. Similarly, we create a matrix $M_r$.
+   
+5. ROTATION: Now, $r_r = M_rM_lr_r$, where $r_l$ and $r_r$ are the coordinates of the points in left and right systems. This can be simply verified using matrix multiplication. From this, we get $R=M_rM_l$<sup>T</sup>, where R is the rotation matrix we will be solving for.
+  
+7. TRANSLATION: Here, Horn says that using the centroids of each of the 3 points will be equivalent to using their coordinates. It will also make our equations simpler. So using this replacement, we come to the simplified equation $r_0 = r_r-sRr_l$, where $r_0$ is the translation vector, s is the scale factor and $r_r$ and $r_l$ are now representing centroids of $r_{r_1},r_{r_2},r_{r_3}$  and $r_{l_1},r_{l_2},r_{l_3}$ respectively.
+
+The total error to be minimized becomes: <img width="211" height="83" alt="Screenshot 2026-07-09 at 6 18 45 PM" src="https://github.com/user-attachments/assets/c8843eb6-cce4-4656-bd17-0fd85c172eac" />
+
+> ...the translation is just the difference of the right centroid and the scaled and rotated left centroid.
+
+8. SCALE: Using a. the error formula above and 2. the fact that the magnitude of the centroid vector remains the same after applying rotation, Horn derives a scale factor $s$. There is a problem of asymmetry when using the least squares formula: we subtract the calculated value from the ground truth (accurate value). But in shape matching, no point cloud is the ground truth! They both have noise. So as a solution, Horn has given a symmetric scale formula.
+<img width="281" height="79" alt="Screenshot 2026-07-09 at 8 48 47 PM" src="https://github.com/user-attachments/assets/8f7ebffc-60f4-411f-87ae-6d9ac4a79ea8" />
+
+Now we don't even need to calculate the rotation before solving for scale.
+
+9. Lastly, regardless of which espression for $s$ we choose (asymmetrical or symmetrical), the minimum error is when $D=sum (i to n) dot(r_l_iR(r_l_i))$ is as large as possible. (because this is a term that is being subtracted in each of the expressions). This was derived from the assumption that the magnitude/length of vector remains same even after rotation.
+
+10. On quaternions:
+
+> Here I solve the problem of finding the rotation that maximizes D by using unit quaternions.
+
+**SOLUTION to find the best rotation**
+
+11. Usin quaternions, the expression for rotation of a 3D vector $r$ is $r_{rotated}=qrq^*$, where $q^*$ is the compelx conjugate of q. A simple explanation: think of $q$ as a complex number a+$i$b. The complex conjugate wuold be $q^*$=a-$i$b. Therefore, the mimum error expression in step 9 can now be written as
+
+<img width="195" height="78" alt="Screenshot 2026-07-09 at 9 17 25 PM" src="https://github.com/user-attachments/assets/aa05c92c-0f5a-443f-ab31-5b0018ca6a5f" />
+
+He mentions the benefits of using quaternions over matrices (unlike in SVD) because:
+> it takes fewer arithmetic operations to multiply two quaternions than it does to multiply two 3 x 3 matrices.
+> also, calculations are not carried out with infinite precision.
+And lastly, it is not easier to find the unit quaternion given a quaternion than it is to find the orthogonal matrix given a matrix.
+
+12. The formula in the image can be substituted with the appropriate variables and be written as $q^TNq$
+
+
 
 ### 2. As-Rigid-As-Possible Deformation
 [See my VEX code here♥️]()
@@ -84,4 +123,4 @@ We can fix this by checking determinant of R matrix and if it negative. If so th
 4. [https://webspace.science.uu.nl/~veltk101/publications/art/smi2001.pdf](https://webspace.science.uu.nl/~veltk101/publications/art/smi2001.pdf)
 5. [https://graphicscomputing.fr/course/2025_2026/epita_ani3d/lecture_slides/04_simulation_rigids/html/02_pbd/06_shape_matching_use/index.html](https://graphicscomputing.fr/course/2025_2026/epita_ani3d/lecture_slides/04_simulation_rigids/html/02_pbd/06_shape_matching_use/index.html)
 6. [https://medium.com/machine-learning-world/linear-algebra-points-matching-with-svd-in-3d-space-2553173e8fed](https://medium.com/machine-learning-world/linear-algebra-points-matching-with-svd-in-3d-space-2553173e8fed)
-7. 
+7. [https://docs.ros.org/en/indigo/api/libfovis/html/absolute__orientation__horn_8hpp_source.html](https://docs.ros.org/en/indigo/api/libfovis/html/absolute__orientation__horn_8hpp_source.html)

@@ -113,6 +113,7 @@ matrix mat_n=set(a_00,a_01,a_02,a_03,a_01,a_11,a_12,a_13,a_02,a_12,a_22,a_23,a_0
 
 1. [https://libeigen.gitlab.io/eigen/docs-nightly/group__TopicLinearAlgebraDecompositions.html](https://libeigen.gitlab.io/eigen/docs-nightly/group__TopicLinearAlgebraDecompositions.html)
 2. [https://docs.ros.org/en/indigo/api/libfovis/html/absolute__orientation__horn_8hpp_source.html](https://docs.ros.org/en/indigo/api/libfovis/html/absolute__orientation__horn_8hpp_source.html)
+3. [https://www.sidefx.com/forum/topic/85882/#post-405489](https://www.sidefx.com/forum/topic/85882/#post-405489)
 
 
 

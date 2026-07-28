@@ -1,21 +1,27 @@
-This is my implementation + breakdown + documentation of KD Tree using VEX
+# KD-Tree Implementation in VEX (Breakdown & Documentation)
+
+This post outlines my implementation and documentation of a KD-Tree using VEX in Houdini. 
+
 [See my code files]()
 
-This is a recursive algorithm, which means it uses memory overhead (recursion stack) to store the result of previous function calls. 
+The KD-Tree is inherently a recursive algorithm, which typically utilizes memory overhead (a recursion stack) to store the results of previous function calls. 
 
 ## A Note On Recursion in VEX
 
-Implementing this using recursion in VEX would be pointlessly exhausting. Since VEX is designed to compile code inline (it just pastes all your code into one main block in its compiler and runs it for fast execution), it is inherently designed for no overhead memory usage-whithout which recursion can't happen.
-The common memory-optimized method for trees is using a heap/stack. This data structure 
+Implementing a KD-Tree using pure recursion in VEX presents a challenge. Because VEX is designed to compile code inline (it pastes all code into a single main block for extremely fast execution), it is not structurally designed for the overhead memory usage required by standard recursion. 
 
-BTW, you can find the KD tree algorithm itself nicely explained here: [https://www.baeldung.com/cs/k-d-trees](https://www.baeldung.com/cs/k-d-trees)
+The industry-standard, memory-optimized method for traversing trees in environments like this is to utilize an explicit heap/stack data structure rather than relying on call-stack recursion. 
+
+*(For a foundational explanation of the KD-Tree algorithm itself, I recommend [this Baeldung resource](https://www.baeldung.com/cs/k-d-trees).)*
 
 ## The Node Setup
 
-## Coding the algorithm + Breakdown of Code
+
+## Code Breakdown
 
 
-Sources ♥️
-1. [https://www.baeldung.com/cs/k-d-trees](https://www.baeldung.com/cs/k-d-trees)
-2. [https://sergeneren.com/2018/09/23/recursion-in-vex/](https://sergeneren.com/2018/09/23/recursion-in-vex/)
-3. [https://www.youtube.com/watch?v=V5i6KM_-8X0](https://www.youtube.com/watch?v=V5i6KM_-8X0)
+---
+**References:**
+1. [Baeldung: KD Trees](https://www.baeldung.com/cs/k-d-trees)
+2. [Recursion in VEX](https://sergeneren.com/2018/09/23/recursion-in-vex/)
+3. [VEX Video Tutorial](https://www.youtube.com/watch?v=V5i6KM_-8X0)

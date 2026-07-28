@@ -27,3 +27,55 @@ f@lambda = lambda;
 // negative mu (to prevent excessive shrinkage) -  range -1 to 0
 float mu = chf("mu");
 f@mu = mu;
+// Retrieve attributes
+dict cot_wts = point(0, "cot_wts", @ptnum);
+float lambda = detail(0, "lambda");
+float mu = detail(0, "mu");
+
+// Calculate weights for 1-ring neighbors
+foreach(int nbr; neighbours(0, @ptnum)) {
+    float curr_wt = -1.0;
+    if(@ptnum != nbr) curr_wt = get_cot_wt(@ptnum, nbr);
+    cot_wts[itoa(nbr)] = curr_wt;
+}
+
+// Calculate sum of weights
+float sum_wts = 0;
+foreach(string key; keys(cot_wts)) sum_wts += cot_wts[key];
+setpointattrib(0, "cot_wts", @ptnum, cot_wts, "set");
+
+// Update position delta
+vector delta_p = set(0);
+foreach(int nbr; neighbours(0, @ptnum)) {
+    float wt = cot_wts[itoa(nbr)];
+    vector pos_nbr = point(0, "P", nbr);
+    delta_p += wt * (pos_nbr - @P);
+}
+
+// Normalize delta to maintain scale ratios
+vector normalized_delta_p = delta_p / sum_wts;
+
+// Taubin Smoothing application (alternate smoothing and inflation)
+if(@Frame % 2 == 0) @P += lambda * normalized_delta_p;
+else @P += mu * normalized_delta_p;
+function float get_cot_wt(int pt; int nbr) {
+    int hedge1 = pointedge(0, pt, nbr);
+    int hedge2 = hedge_nextequiv(0, hedge1);
+    
+    int h1 = hedge_next(0, hedge1);
+    int t1 = hedge_dstpoint(0, h1);
+    vector v1_a = point(0, "P", pt) - point(0, "P", t1);
+    vector v1_b = point(0, "P", nbr) - point(0, "P", t1);
+    
+    int h2 = hedge_prev(0, hedge2);
+    int t2 = hedge_srcpoint(0, h2);
+    vector v2_a = point(0, "P", t2) - point(0, "P", pt);
+    vector v2_b = point(0, "P", t2) - point(0, "P", nbr);
+    
+    // Calculate cotangents
+    float cot_theta1 = dot(v1_a, v1_b) / max(length(cross(v1_a, v1_b)), 0.00001);
+    float cot_theta2 = dot(v2_a, v2_b) / max(length(cross(v2_a, v2_b)), 0.00001);
+    
+    return (cot_theta1 + cot_theta2) / 2.0;
+}
+```
